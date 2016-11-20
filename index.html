@@ -47,7 +47,7 @@
 				<div id="divWatchMeMove">Hey I am here</div>
                 <p id="demo">See me on the map.</p>
 
-<button onclick="myMap()">Locate</button>
+<button onclick="getLocation()">Locate</button>
 
 <div id="mapholder"></div>
                 
@@ -279,8 +279,7 @@
 
  });
  }
- </script>
-        <script>
+
 var x = document.getElementById("demo");
 
 function getLocation() {
@@ -293,12 +292,28 @@ function getLocation() {
 
 function showPosition(position) {
     var latlon = position.coords.latitude + "," + position.coords.longitude;
-
+    var myCenter = new google.maps.LatLng(position.coords.latitude,position.coords.longitude);
     var img_url = "https://maps.googleapis.com/maps/api/staticmap?center="
-    +latlon+"&zoom=14&size=400x300&sensor=true";
-    document.getElementById("mapholder").innerHTML = "<img src='"+img_url+"'>";
+    +LatLng+"&zoom=14&size=400x300&sensor=true";
+    document.getElementById("mapholder").innerHTML = "<img src='"+myCenter+"'>";
 }
-            
+
+            function myMap() {
+  var myCenter = new google.maps.LatLng(position.coords.latitude,position.coords.longitude);
+  var mapCanvas = document.getElementById("map");
+  var mapOptions = {center: myCenter, zoom: 5};
+  var map = new google.maps.Map(mapCanvas, mapOptions);
+  var marker = new google.maps.Marker({position:myCenter});
+  marker.setMap(map);
+
+  google.maps.event.addListener(marker,'click',function() {
+    var pos = map.getZoom();
+    map.setZoom(9);
+    map.setCenter(marker.getPosition());
+    window.setTimeout(function() {map.setZoom(pos);},3000);
+  });
+}
+                        
 
 function showError(error) {
     switch(error.code) {
@@ -315,21 +330,6 @@ function showError(error) {
             x.innerHTML = "An unknown error occurred."
             break;
     }
-}
-            function myMap() {
-  var myCenter = new google.maps.LatLng(position.coords.latitude,position.coords.longitude);
-  var mapCanvas = document.getElementById("map");
-  var mapOptions = {center: myCenter, zoom: 5};
-  var map = new google.maps.Map(mapCanvas, mapOptions);
-  var marker = new google.maps.Marker({position:myCenter});
-  marker.setMap(map);
-
-  google.maps.event.addListener(marker,'click',function() {
-    var pos = map.getZoom();
-    map.setZoom(9);
-    map.setCenter(marker.getPosition());
-    window.setTimeout(function() {map.setZoom(pos);},3000);
-  });
 }
 </script>
 
